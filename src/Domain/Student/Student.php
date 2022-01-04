@@ -68,29 +68,16 @@ class Student
 
     public function hasAccess(): bool
     {
-        if ($this->watchedVideos->count() > 0) {
-
-            return $this->firstVideoWatchedInLessThan90Days();
-
-        } else {
+        if ($this->watchedVideos->count() === 0) {
             return true;
         }
-    }
 
-    public function firstVideoWatchedInLessThan90Days()
-    {
         $this->watchedVideos->sort(fn (DateTimeInterface $dateA, DateTimeInterface $dateB) => $dateA <=> $dateB);
         /** @var DateTimeInterface $firstDate */
         $firstDate = $this->watchedVideos->first()->value;
         $today = new \DateTimeImmutable();
 
-
-
-        if ($firstDate->diff($today)->days >= 90) {
-            return false;
-        } else {
-            return true;
-        }
+        return $firstDate->diff($today) < 90;
     }
 
 
