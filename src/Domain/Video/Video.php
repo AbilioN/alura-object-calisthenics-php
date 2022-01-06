@@ -4,6 +4,8 @@ namespace Alura\Calisthenics\Domain\Video;
 
 class Video
 {
+
+    
     private bool $visible = false;
 
     private int $ageLimit;

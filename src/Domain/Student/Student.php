@@ -3,6 +3,7 @@
 namespace Alura\Calisthenics\Domain\Student;
 
 use Alura\Calisthenics\Domain\Video\Video;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Ds\Map;
 use Email;
@@ -55,7 +56,7 @@ class Student
 
     public function watch(Video $video, DateTimeInterface $date)
     {
-        $this->watchedVideos->put($video, $date);
+        $this->watchedVideos->add($video, $date);
     }
 
     public function hasAccess(): bool
@@ -64,12 +65,17 @@ class Student
             return true;
         }
 
-        $this->watchedVideos->sort(fn (DateTimeInterface $dateA, DateTimeInterface $dateB) => $dateA <=> $dateB);
-        /** @var DateTimeInterface $firstDate */
-        $firstDate = $this->watchedVideos->first()->value;
+        $firstDate =  $this->watchedVideos->dateOfFirstVideo();
+       
         $today = new \DateTimeImmutable();
-
         return $firstDate->diff($today) < 90;
+    }
+
+    public function age() : int
+    {
+        $today = new DateTimeImmutable();
+        $dateInterval = $this->bd->diff($today);
+        return $dateInterval->y;
     }
 
 
